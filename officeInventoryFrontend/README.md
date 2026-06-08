@@ -1,16 +1,63 @@
-# React + Vite
+# Office Inventory Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack application for managing office supply purchase requests. Creators can raise orders, and Purchasers can approve/reject them.
 
-Currently, two official plugins are available:
+## Table of Contents
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation & Setup](#installation--setup)
+  - [Backend Setup](#backend-setup)
+  - [Frontend Setup](#frontend-setup)
+- [Running the Application](#running-the-application)
+- [Default Credentials](#default-credentials)
+- [API Endpoints](#api-endpoints)
+- [Business Rules](#business-rules)
+- [Troubleshooting](#troubleshooting)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
 
-## React Compiler
+### Backend
+- Java 17
+- Spring Boot 3.2.x
+- Spring Security with JWT
+- Spring Data JPA
+- H2 Database (In-memory)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+- React 18
+- Vite
+- Tailwind CSS
+- React Router DOM
+- Axios
+- React Toastify
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### For Creators
+- Register new account
+- Login with JWT authentication
+- Create new orders with multiple items
+- Save orders as draft
+- Edit draft orders
+- Submit orders for approval
+- View all personal orders
+- View order details
+- Change password
+
+### For Purchasers
+- Login with JWT authentication
+- View all submitted orders
+- Approve orders with transaction reference
+- Reject orders with rejection note
+- View order details
+- Change password
+
+### Business Constraints
+- No two submitted orders can contain the same items
+- Draft orders can have overlapping items
+- Only the creator can edit their draft orders
+- Submitted orders cannot be edited
+
+## Project Structure
