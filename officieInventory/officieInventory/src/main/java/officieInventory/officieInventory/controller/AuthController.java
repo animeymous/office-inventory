@@ -52,4 +52,27 @@ public class AuthController {
         userService.changePassword(username, request.get("newPassword"));
         return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
     }
+
+    @PostMapping("/create-purchaser")
+    public ResponseEntity<?> createPurchaser(@RequestBody AuthRequest request) {
+
+        // Check if username already exists
+        if (userService.findByUsername(request.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Username already exists"));
+        }
+
+        // Create new purchaser account
+        User purchaser = userService.register(
+                request.getUsername(),
+                request.getPassword(),
+                "PURCHASER",
+                request.getFullName() != null ? request.getFullName() : request.getUsername()
+        );
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Purchaser created successfully",
+                "username", purchaser.getUsername(),
+                "role", purchaser.getRole()
+        ));
+    }
 }
