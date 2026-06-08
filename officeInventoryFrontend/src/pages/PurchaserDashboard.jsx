@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { toast } from 'react-toastify';
-import { getStatusColor } from '../utils/statusColors';
 
 const PurchaserDashboard = () => {
   const [orders, setOrders] = useState([]);
@@ -21,19 +20,16 @@ const PurchaserDashboard = () => {
         setLoading(false);
       }
     };
-    
     fetchOrders();
   }, []);
 
-  const handleComplete = async (orderId, transactionRef) => {
-    const ref = prompt('Enter transaction reference:', `PO-${Date.now()}`);
+  const handleComplete = async (orderId) => {
+    const ref = prompt('Enter transaction reference (e.g., PO-2026-001):');
     if (!ref) return;
     
     try {
       await api.post(`/orders/${orderId}/complete`, { transactionReference: ref });
       toast.success('Order completed successfully');
-      
-      // Refresh orders
       const response = await api.get('/orders/submitted');
       setOrders(response.data);
     } catch (error) {
@@ -48,8 +44,6 @@ const PurchaserDashboard = () => {
     try {
       await api.post(`/orders/${orderId}/reject`, { note });
       toast.success('Order rejected successfully');
-      
-      // Refresh orders
       const response = await api.get('/orders/submitted');
       setOrders(response.data);
     } catch (error) {
@@ -57,75 +51,117 @@ const PurchaserDashboard = () => {
     }
   };
 
+  const getStatusBadge = (status) => {
+    const styles = {
+      SUBMITTED: 'bg-blue-100 text-blue-800 border border-blue-200',
+      COMPLETED: 'bg-green-100 text-green-800 border border-green-200',
+      REJECTED: 'bg-red-100 text-red-800 border border-red-200'
+    };
+    return styles[status] || 'bg-gray-100 text-gray-800';
+  };
+
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Submitted Orders</h1>
-      
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Submitted Orders</h1>
+        <p className="text-gray-500 mt-1">Review and process purchase requests</p>
+      </div>
+
       {orders.length === 0 ? (
-        <p className="text-gray-500">No submitted orders found.</p>
+        <div className="bg-white rounded-xl shadow-md p-12 text-center">
+          <div className="text-6xl mb-4">📋</div>
+          <h3 className="text-xl font-semibold text-gray-700">No Pending Orders</h3>
+          <p className="text-gray-400 mt-2">All submitted orders have been processed</p>
+        </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border rounded-lg">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-6 py-3 text-left">Order ID</th>
-                <th className="px-6 py-3 text-left">Created By</th>
-                <th className="px-6 py-3 text-left">Status</th>
-                <th className="px-6 py-3 text-left">Expiry Date</th>
-                <th className="px-6 py-3 text-left">Created At</th>
-                <th className="px-6 py-3 text-left">Items</th>
-                <th className="px-6 py-3 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order.id} className="border-t hover:bg-gray-50">
-                  <td className="px-6 py-3">{order.id}</td>
-                  <td className="px-6 py-3">{order.createdByUsername}</td>
-                  <td className="px-6 py-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
+        <div className="grid gap-5">
+          {orders.map((order) => (
+            <div key={order.id} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 p-6">
+              <div className="flex flex-wrap justify-between items-start gap-4">
+                {/* Left side - Order Info */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-3 flex-wrap">
+                    <span className="text-xl font-bold text-gray-800">#{order.id}</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(order.status)}`}>
                       {order.status}
                     </span>
-                  </td>
-                  <td className="px-6 py-3">{new Date(order.expiryDate).toLocaleDateString()}</td>
-                  <td className="px-6 py-3">{new Date(order.createdAt).toLocaleDateString()}</td>
-                  <td className="px-6 py-3">
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm mb-3">
+                    <div className="flex items-center text-gray-600">
+                      <span className="font-medium w-24">Created By:</span>
+                      <span className="text-blue-600 font-medium">{order.createdByUsername}</span>
+                    </div>
+                    <div className="flex items-center text-gray-600">
+                      <span className="font-medium w-24">Expires:</span>
+                      <span>{new Date(order.expiryDate).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center text-gray-600">
+                      <span className="font-medium w-24">Created:</span>
+                      <span>{new Date(order.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center text-gray-600">
+                      <span className="font-medium w-24">Items:</span>
+                      <span>{order.items.length} item(s)</span>
+                    </div>
+                  </div>
+                  
+                  {/* Items tags */}
+                  <div className="flex flex-wrap gap-2">
                     {order.items.map((item, idx) => (
-                      <div key={idx}>{item.itemName}: {item.quantity}</div>
+                      <span key={idx} className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-700">
+                        {item.itemName} <span className="font-semibold">({item.quantity})</span>
+                      </span>
                     ))}
-                  </td>
-                  <td className="px-6 py-3">
-                    <button
-                      onClick={() => navigate(`/order/${order.id}`)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded mr-2 hover:bg-blue-600"
-                    >
-                      View
-                    </button>
-                    {order.status === 'SUBMITTED' && (
-                      <>
-                        <button
-                          onClick={() => handleComplete(order.id)}
-                          className="bg-green-500 text-white px-3 py-1 rounded mr-2 hover:bg-green-600"
-                        >
-                          Complete
-                        </button>
-                        <button
-                          onClick={() => handleReject(order.id)}
-                          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                        >
-                          Reject
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-           </table>
+                  </div>
+
+                  {/* Rejection note if rejected */}
+                  {order.rejectionNote && (
+                    <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                      <p className="text-sm text-red-700">
+                        <span className="font-semibold">Rejection Reason:</span> {order.rejectionNote}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Right side - Actions */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => navigate(`/order/${order.id}`)}
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition text-gray-700 font-medium text-sm"
+                  >
+                    View
+                  </button>
+                  {order.status === 'SUBMITTED' && (
+                    <>
+                      <button
+                        onClick={() => handleComplete(order.id)}
+                        className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition text-white font-medium text-sm"
+                      >
+                        Complete
+                      </button>
+                      <button
+                        onClick={() => handleReject(order.id)}
+                        className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition text-white font-medium text-sm"
+                      >
+                        Reject
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

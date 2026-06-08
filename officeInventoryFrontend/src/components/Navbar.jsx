@@ -11,11 +11,11 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white shadow-lg">
+    <nav className="bg-blue-600 text-white shadow-md">
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="text-xl font-bold">
-            Office Inventory System
+            Office Inventory
           </Link>
           
           <div className="flex items-center gap-4">
@@ -24,15 +24,14 @@ const Navbar = () => {
             </span>
             
             {user?.role === 'CREATOR' && (
-              <Link to="/creator" className="hover:bg-blue-700 px-3 py-1 rounded">
-                My Orders
-              </Link>
-            )}
-            
-            {user?.role === 'CREATOR' && (
-              <Link to="/create-order" className="hover:bg-blue-700 px-3 py-1 rounded">
-                Create Order
-              </Link>
+              <>
+                <Link to="/creator" className="hover:bg-blue-700 px-3 py-1 rounded">
+                  My Orders
+                </Link>
+                <Link to="/create-order" className="hover:bg-blue-700 px-3 py-1 rounded">
+                  Create Order
+                </Link>
+              </>
             )}
             
             {user?.role === 'PURCHASER' && (
