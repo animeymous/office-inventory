@@ -10,6 +10,10 @@ const CreateOrder = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const addItem = () => {
+    if (items.length >= 10) {
+      toast.warning('Maximum 10 items per order');
+      return;
+    }
     setItems([...items, { itemName: '', quantity: 1 }]);
   };
 
@@ -55,7 +59,13 @@ const CreateOrder = () => {
       };
 
       const response = await api.post('/orders/create', orderData);
-      toast.success(`Order ${response.data.status === 'DRAFT' ? 'saved as draft' : 'submitted successfully'}`);
+      
+      if (response.data.status === 'DRAFT') {
+        toast.success('Order saved as draft successfully!');
+      } else {
+        toast.success('Order submitted for approval!');
+      }
+      
       navigate('/creator');
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to create order');
@@ -64,91 +74,164 @@ const CreateOrder = () => {
     }
   };
 
+  // Get min date (today) for expiry date picker
+  const today = new Date().toISOString().split('T')[0];
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Create New Order</h1>
-        <p className="text-gray-500 mt-1">Fill in the details below to create a purchase request</p>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-md p-6">
-        {/* Expiry Date */}
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">Expiry Date *</label>
-          <input
-            type="date"
-            value={expiryDate}
-            onChange={(e) => setExpiryDate(e.target.value)}
-            className="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          />
-          <p className="text-xs text-gray-400 mt-1">Order must be submitted before this date</p>
-        </div>
-
-        {/* Items Section */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-3">
-            <label className="text-gray-700 font-medium">Items *</label>
-            <button
-              onClick={addItem}
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-            >
-              + Add Item
-            </button>
-          </div>
-          
-          <div className="space-y-3">
-            {items.map((item, index) => (
-              <div key={index} className="flex gap-3 items-center">
-                <input
-                  type="text"
-                  placeholder="Item name"
-                  value={item.itemName}
-                  onChange={(e) => updateItem(index, 'itemName', e.target.value)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <input
-                  type="number"
-                  placeholder="Qty"
-                  value={item.quantity}
-                  onChange={(e) => updateItem(index, 'quantity', e.target.value)}
-                  className="w-24 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                  min="1"
-                />
-                <button
-                  onClick={() => removeItem(index)}
-                  className="p-2 text-red-500 hover:text-red-700 transition"
-                  title="Remove item"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-3 pt-4 border-t">
-          <button
-            onClick={() => handleSubmit('DRAFT')}
-            disabled={submitting}
-            className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition font-medium disabled:opacity-50"
-          >
-            Save as Draft
-          </button>
-          <button
-            onClick={() => handleSubmit('SUBMITTED')}
-            disabled={submitting}
-            className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition font-medium disabled:opacity-50"
-          >
-            Submit Order
-          </button>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
           <button
             onClick={() => navigate('/creator')}
-            className="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition font-medium"
+            className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-800 transition"
           >
-            Cancel
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
           </button>
+          
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">Create New Order</h1>
+            <p className="text-gray-500 mt-1">Fill in the details to create a purchase request</p>
+          </div>
+        </div>
+
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+            <h2 className="text-white font-semibold text-lg">Order Information</h2>
+          </div>
+          
+          <div className="p-6">
+            {/* Expiry Date */}
+            <div className="mb-6">
+              <label className="block text-gray-700 font-semibold mb-2">
+                Expiry Date <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="date"
+                  value={expiryDate}
+                  min={today}
+                  onChange={(e) => setExpiryDate(e.target.value)}
+                  className="w-full sm:w-auto min-w-[280px] px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                Order must be submitted before this date
+              </p>
+            </div>
+
+            {/* Items Section */}
+            <div className="mb-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+                <label className="text-gray-700 font-semibold">
+                  Order Items <span className="text-red-500">*</span>
+                </label>
+                <button
+                  onClick={addItem}
+                  className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  Add Another Item
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                {items.map((item, index) => (
+                  <div key={index} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                    <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                      <div className="flex-1">
+                        <label className="block text-xs text-gray-500 mb-1 sm:hidden">Item Name</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Notebook, Pen, Keyboard"
+                          value={item.itemName}
+                          onChange={(e) => updateItem(index, 'itemName', e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="w-full sm:w-32">
+                        <label className="block text-xs text-gray-500 mb-1 sm:hidden">Quantity</label>
+                        <input
+                          type="number"
+                          placeholder="Qty"
+                          value={item.quantity}
+                          onChange={(e) => updateItem(index, 'quantity', e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                          min="1"
+                        />
+                      </div>
+                      <button
+                        onClick={() => removeItem(index)}
+                        className="px-4 py-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition font-medium"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {items.length >= 10 && (
+                <p className="text-amber-600 text-sm mt-2 flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  Maximum 10 items per order reached
+                </p>
+              )}
+            </div>
+
+            {/* Tips Section */}
+            <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+              <div className="flex gap-3">
+                <div className="text-blue-600 text-xl">💡</div>
+                <div>
+                  <p className="font-semibold text-blue-800 text-sm">Pro Tip</p>
+                  <p className="text-blue-700 text-xs mt-1">
+                    Save as draft if you need to edit later. Submit immediately for purchaser approval.
+                    Duplicate items across different submitted orders are not allowed.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+              <button
+                onClick={() => handleSubmit('DRAFT')}
+                disabled={submitting}
+                className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl transition font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                Save as Draft
+              </button>
+              <button
+                onClick={() => handleSubmit('SUBMITTED')}
+                disabled={submitting}
+                className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl transition font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+                Submit Order
+              </button>
+              <button
+                onClick={() => navigate('/creator')}
+                className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-xl transition font-medium"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
