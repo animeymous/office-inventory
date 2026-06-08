@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import { useAuth } from '../contexts/AuthContext';
 
 const ChangePassword = () => {
-  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -65,13 +64,13 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4 transition-colors duration-200">
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-800 transition"
+            className="mb-4 flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -80,52 +79,30 @@ const ChangePassword = () => {
           </button>
           
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-2xl mb-4">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/50 rounded-2xl mb-4 transition-colors duration-200">
+              <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-gray-800">Change Password</h1>
-            <p className="text-gray-500 mt-1">Secure your account with a strong password</p>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Change Password</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">Secure your account with a strong password</p>
           </div>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transition-colors duration-200">
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
             <h2 className="text-white font-semibold text-lg">Password Settings</h2>
           </div>
           
           <form onSubmit={handleSubmit} className="p-6">
-            {/* Current Password */}
-            <div className="mb-5">
-              <label className="block text-gray-700 font-semibold mb-2">
-                Current Password
-              </label>
-              <div className="relative">
-                <div className="absolute left-3 top-3 text-gray-400">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter current password"
-                  required
-                />
-              </div>
-            </div>
-
             {/* New Password */}
             <div className="mb-3">
-              <label className="block text-gray-700 font-semibold mb-2">
+              <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
                 New Password
               </label>
               <div className="relative">
-                <div className="absolute left-3 top-3 text-gray-400">
+                <div className="absolute left-3 top-3 text-gray-400 dark:text-gray-500">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
@@ -134,7 +111,7 @@ const ChangePassword = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-200"
                   placeholder="Enter new password"
                   required
                 />
@@ -145,7 +122,7 @@ const ChangePassword = () => {
             {newPassword && (
               <div className="mb-5">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-xs text-gray-500">Password Strength</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Password Strength</span>
                   <span className={`text-xs font-semibold ${
                     passwordStrength().text === 'Weak' ? 'text-red-500' :
                     passwordStrength().text === 'Medium' ? 'text-yellow-500' : 'text-green-500'
@@ -153,13 +130,13 @@ const ChangePassword = () => {
                     {passwordStrength().text}
                   </span>
                 </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                   <div 
                     className={`h-full ${passwordStrength().color} transition-all duration-300`}
                     style={{ width: passwordStrength().width }}
                   />
                 </div>
-                <div className="grid grid-cols-3 gap-1 mt-2 text-xs text-gray-400">
+                <div className="grid grid-cols-3 gap-1 mt-2 text-xs text-gray-400 dark:text-gray-500">
                   <span>6+ chars</span>
                   <span>Uppercase</span>
                   <span>Number</span>
@@ -169,11 +146,11 @@ const ChangePassword = () => {
 
             {/* Confirm Password */}
             <div className="mb-6">
-              <label className="block text-gray-700 font-semibold mb-2">
+              <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
                 Confirm New Password
               </label>
               <div className="relative">
-                <div className="absolute left-3 top-3 text-gray-400">
+                <div className="absolute left-3 top-3 text-gray-400 dark:text-gray-500">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
@@ -182,12 +159,12 @@ const ChangePassword = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`w-full pl-10 pr-10 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                  className={`w-full pl-10 pr-10 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
                     confirmPassword && newPassword !== confirmPassword
                       ? 'border-red-500 focus:ring-red-500'
                       : confirmPassword && newPassword === confirmPassword
                       ? 'border-green-500 focus:ring-green-500'
-                      : 'border-gray-300'
+                      : 'border-gray-300 dark:border-gray-600'
                   }`}
                   placeholder="Confirm new password"
                   required
@@ -214,17 +191,17 @@ const ChangePassword = () => {
                   onChange={(e) => setShowPassword(e.target.checked)}
                   className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                 />
-                <span className="text-sm text-gray-600">Show password</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Show password</span>
               </label>
             </div>
 
             {/* Security Tips */}
-            <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-200 dark:border-blue-800 transition-colors duration-200">
               <div className="flex gap-3">
-                <div className="text-blue-600 text-xl">🔒</div>
+                <div className="text-blue-600 dark:text-blue-400 text-xl">🔒</div>
                 <div className="flex-1">
-                  <p className="font-semibold text-blue-800 text-sm">Password Security Tips</p>
-                  <ul className="text-blue-700 text-xs mt-2 space-y-1">
+                  <p className="font-semibold text-blue-800 dark:text-blue-300 text-sm">Password Security Tips</p>
+                  <ul className="text-blue-700 dark:text-blue-400 text-xs mt-2 space-y-1">
                     <li className="flex items-center gap-1">• Use at least 8 characters</li>
                     <li className="flex items-center gap-1">• Include uppercase and lowercase letters</li>
                     <li className="flex items-center gap-1">• Add numbers for extra security</li>
@@ -253,14 +230,14 @@ const ChangePassword = () => {
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-xl transition font-medium"
+                className="px-6 py-3 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-xl transition font-medium"
               >
                 Cancel
               </button>
             </div>
 
             {/* Info Message */}
-            <p className="text-center text-xs text-gray-400 mt-6">
+            <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-6">
               You will be logged out after changing your password
             </p>
           </form>

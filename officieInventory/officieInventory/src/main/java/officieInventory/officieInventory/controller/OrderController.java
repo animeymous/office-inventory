@@ -163,4 +163,17 @@ public class OrderController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/all-for-purchaser")
+    public ResponseEntity<?> getAllOrdersForPurchaser(@RequestHeader("Authorization") String authHeader) {
+        String role = extractRole(authHeader);
+
+        if (!"PURCHASER".equals(role)) {
+            return ResponseEntity.status(403).body(Map.of("error", "Only purchasers can view all orders"));
+        }
+
+        // Return ALL orders (DRAFT, SUBMITTED, COMPLETED, REJECTED)
+        List<OrderResponse> orders = orderService.getAllOrders();
+        return ResponseEntity.ok(orders);
+    }
 }

@@ -74,17 +74,16 @@ const CreateOrder = () => {
     }
   };
 
-  // Get min date (today) for expiry date picker
   const today = new Date().toISOString().split('T')[0];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 px-4 transition-colors duration-200">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate('/creator')}
-            className="mb-4 flex items-center gap-2 text-gray-600 hover:text-gray-800 transition"
+            className="mb-4 flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -93,13 +92,13 @@ const CreateOrder = () => {
           </button>
           
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Create New Order</h1>
-            <p className="text-gray-500 mt-1">Fill in the details to create a purchase request</p>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Create New Order</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">Fill in the details to create a purchase request</p>
           </div>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transition-colors duration-200">
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
             <h2 className="text-white font-semibold text-lg">Order Information</h2>
           </div>
@@ -107,7 +106,7 @@ const CreateOrder = () => {
           <div className="p-6">
             {/* Expiry Date */}
             <div className="mb-6">
-              <label className="block text-gray-700 font-semibold mb-2">
+              <label className="block text-gray-700 dark:text-gray-300 font-semibold mb-2">
                 Expiry Date <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -116,11 +115,11 @@ const CreateOrder = () => {
                   value={expiryDate}
                   min={today}
                   onChange={(e) => setExpiryDate(e.target.value)}
-                  className="w-full sm:w-auto min-w-[280px] px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full sm:w-auto min-w-[280px] px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-200"
                   required
                 />
               </div>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                 Order must be submitted before this date
               </p>
             </div>
@@ -128,12 +127,12 @@ const CreateOrder = () => {
             {/* Items Section */}
             <div className="mb-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-                <label className="text-gray-700 font-semibold">
+                <label className="text-gray-700 dark:text-gray-300 font-semibold">
                   Order Items <span className="text-red-500">*</span>
                 </label>
                 <button
                   onClick={addItem}
-                  className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium flex items-center gap-1"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -144,32 +143,32 @@ const CreateOrder = () => {
               
               <div className="space-y-3">
                 {items.map((item, index) => (
-                  <div key={index} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                  <div key={index} className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-200 dark:border-gray-600 transition-colors duration-200">
                     <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
                       <div className="flex-1">
-                        <label className="block text-xs text-gray-500 mb-1 sm:hidden">Item Name</label>
+                        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1 sm:hidden">Item Name</label>
                         <input
                           type="text"
                           placeholder="e.g., Notebook, Pen, Keyboard"
                           value={item.itemName}
                           onChange={(e) => updateItem(index, 'itemName', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-200"
                         />
                       </div>
                       <div className="w-full sm:w-32">
-                        <label className="block text-xs text-gray-500 mb-1 sm:hidden">Quantity</label>
+                        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1 sm:hidden">Quantity</label>
                         <input
                           type="number"
                           placeholder="Qty"
                           value={item.quantity}
                           onChange={(e) => updateItem(index, 'quantity', e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-200"
                           min="1"
                         />
                       </div>
                       <button
                         onClick={() => removeItem(index)}
-                        className="px-4 py-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition font-medium"
+                        className="px-4 py-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition font-medium"
                       >
                         Remove
                       </button>
@@ -179,7 +178,7 @@ const CreateOrder = () => {
               </div>
 
               {items.length >= 10 && (
-                <p className="text-amber-600 text-sm mt-2 flex items-center gap-1">
+                <p className="text-amber-600 dark:text-amber-400 text-sm mt-2 flex items-center gap-1">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
@@ -189,12 +188,12 @@ const CreateOrder = () => {
             </div>
 
             {/* Tips Section */}
-            <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-200 dark:border-blue-800 transition-colors duration-200">
               <div className="flex gap-3">
-                <div className="text-blue-600 text-xl">💡</div>
+                <div className="text-blue-600 dark:text-blue-400 text-xl">💡</div>
                 <div>
-                  <p className="font-semibold text-blue-800 text-sm">Pro Tip</p>
-                  <p className="text-blue-700 text-xs mt-1">
+                  <p className="font-semibold text-blue-800 dark:text-blue-300 text-sm">Pro Tip</p>
+                  <p className="text-blue-700 dark:text-blue-400 text-xs mt-1">
                     Save as draft if you need to edit later. Submit immediately for purchaser approval.
                     Duplicate items across different submitted orders are not allowed.
                   </p>
@@ -203,7 +202,7 @@ const CreateOrder = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => handleSubmit('DRAFT')}
                 disabled={submitting}
@@ -226,7 +225,7 @@ const CreateOrder = () => {
               </button>
               <button
                 onClick={() => navigate('/creator')}
-                className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-xl transition font-medium"
+                className="px-6 py-3 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-xl transition font-medium"
               >
                 Cancel
               </button>
