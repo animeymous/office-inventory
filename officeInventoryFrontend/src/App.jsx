@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import CreatorDashboard from './pages/CreatorDashboard';
 import PurchaserDashboard from './pages/PurchaserDashboard';
 import CreateOrder from './pages/CreateOrder';
@@ -21,6 +22,7 @@ const AppContent = () => {
       {user && <Navbar />}
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/" element={
           user ? <Navigate to={user.role === 'CREATOR' ? '/creator' : '/purchaser'} /> : <Navigate to="/login" />
         } />
