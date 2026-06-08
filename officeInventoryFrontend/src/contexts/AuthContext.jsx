@@ -14,31 +14,36 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
     const username = localStorage.getItem('username');
     const fullName = localStorage.getItem('fullName');
     
-    if (token && role) {
-      return { token, role, username, fullName };
+    if (role) {
+      return { role, username, fullName };
     }
     return null;
   });
 
   const login = async (username, password) => {
+    // Token is automatically stored in HttpOnly cookie by backend
     const response = await api.post('/auth/login', { username, password });
-    const { token, role, username: userName, fullName } = response.data;
+    const { role, username: userName, fullName } = response.data;
     
-    localStorage.setItem('token', token);
+    // Store only non-sensitive data in localStorage
     localStorage.setItem('role', role);
     localStorage.setItem('username', userName);
     localStorage.setItem('fullName', fullName);
     
-    setUser({ token, role, username: userName, fullName });
+    setUser({ role, username: userName, fullName });
     return response.data;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout'); // Clear cookie on backend
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     localStorage.clear();
     setUser(null);
   };

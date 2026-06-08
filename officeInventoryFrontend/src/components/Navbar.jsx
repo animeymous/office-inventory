@@ -9,8 +9,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
@@ -136,8 +136,8 @@ const Navbar = () => {
             </Link>
             
             <button
-              onClick={() => {
-                handleLogout();
+              onClick={async () => {
+                await handleLogout();
                 setIsMenuOpen(false);
               }}
               className="block w-full text-left bg-red-500 hover:bg-red-600 px-3 py-2 rounded transition text-white"
